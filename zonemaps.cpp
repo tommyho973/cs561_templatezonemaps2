@@ -21,7 +21,7 @@ void zonemap<T>::build(){
     sort_elements();
     num_zones = (total + num_elements_per_zone -1)/ num_elements_per_zone;
     zone<T> current;
-    for(int i = 0; i < elements.size(); i++){
+    for(size_t i = 0; i < elements.size(); i++){
         current.elements.push_back(elements[i]);
         if(current.elements.size()==num_elements_per_zone || i == elements.size()-1){
             current_zone.min = current_zone.elements.front();
@@ -38,9 +38,9 @@ template<typename T>
 void zonemap<T>::sort_elements(){
     bool swapped;
     int n = elements.size();
-    for(int i = 0; i < n-1; i++){
+    for(size_t i = 0; i < n-1; i++){
         swapped = false;
-        for(int j = 0; j < n-1; j++){
+        for(size_t j = 0; j < n-1; j++){
             if(elements[j]> elements[j+1]){
                 std::swap(elements[j],elements[j+1]);
                 swapped = true;
@@ -56,6 +56,22 @@ template<typename T>
 size_t zonemap<T>::query(T key)
 {
     // Your code starts here ...
-    return 0;
+    size_t count = 0;
+    for(size_t i= 0; i < num_zones; i++){
+        const auto& z = zones[i];
+        if(z.max >= key && z.min <= key){
+            for (const auto& element : z.elements) {
+            if (element == key) {
+                count++;  
+            }
+        }
+        }
+    }
+    return count;
+}
+
+template<typename T>
+std::vector<T> zonemap<T>::query(T low, T high){
+    
 }
 
