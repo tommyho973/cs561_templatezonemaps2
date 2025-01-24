@@ -1,4 +1,5 @@
 #include "zonemaps.h"
+#include <algorithm>
 
 template<typename T>
 zonemap<T>::zonemap(std::vector<T> _elements, uint _num_elements_per_zone)
@@ -13,43 +14,41 @@ zonemap<T>::zonemap(std::vector<T> _elements, uint _num_elements_per_zone)
         num_zones = 0;
         return;
     }
+    //Call function to build zonemap
     build();
 }
 
 template<typename T>
 void zonemap<T>::build(){
+    //Sort elements first
     sort_elements();
-    num_zones = (total + num_elements_per_zone -1)/ num_elements_per_zone;
-    zone<T> current;
+    //Calculate the number of zones
+    size_t num_elements = elements.size();
+    num_zones = std::ceil(static_cast<double>(num_elements)/ num_elements_per_zone);
+    zone<T> current_zone;
+    //Iterate over all the elements
     for(size_t i = 0; i < elements.size(); i++){
-        current.elements.push_back(elements[i]);
-        if(current.elements.size()==num_elements_per_zone || i == elements.size()-1){
+        //Add elements to current_zone
+        current_zone.elements.push_back(elements[i]);
+        //If the number of elements in the current zone equals the amount of elements per zone or we run out of overall elements then we set the minimum, maximum and size.
+        if(current_zone.elements.size()==num_elements_per_zone || i == elements.size()-1){
+            //Since the elements are sorted the 1st and last element will be the minimum and maximum
             current_zone.min = current_zone.elements.front();
             current_zone.max = current_zone.elements.back();
             current_zone.size = current_zone.elements.size();
         }
+        //Add the zone to the zonemap
         zones.push_back(std::move(current_zone));
+        //Clear the current zone
         current_zone.elements.clear();
 
     }
 }
 
+//Using built in sort function I found on Google
 template<typename T>
 void zonemap<T>::sort_elements(){
-    bool swapped;
-    int n = elements.size();
-    for(size_t i = 0; i < n-1; i++){
-        swapped = false;
-        for(size_t j = 0; j < n-1; j++){
-            if(elements[j]> elements[j+1]){
-                std::swap(elements[j],elements[j+1]);
-                swapped = true;
-            }
-        }
-        if(!swapped){
-            break;
-        }
-    }
+    std::sort(elements.begin(),elements.end());
 }
 
 template<typename T>
