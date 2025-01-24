@@ -56,8 +56,10 @@ size_t zonemap<T>::query(T key)
 {
     // Your code starts here ...
     size_t count = 0;
+    //Iterate over the zones
     for(size_t i= 0; i < num_zones; i++){
         const auto& z = zones[i];
+        //If key is in the range of the zone iterate over the elements in the zone and increment the count if we have a matching key
         if(z.max >= key && z.min <= key){
             for (const auto& element : z.elements) {
             if (element == key) {
@@ -72,7 +74,9 @@ size_t zonemap<T>::query(T key)
 template<typename T>
 std::vector<T> zonemap<T>::query(T low, T high){
     std::vector<T> result;
+    //Iterate over the zones
     for(const auto&z : zones){
+        //If range exists in the zone range then we add complying elements to our result vector
         if(z.max >= low && z.min <= high){
             for(const auto&e : z.elements){
                 if(e >= low && e <= high){
