@@ -72,6 +72,16 @@ size_t zonemap<T>::query(T key)
 
 template<typename T>
 std::vector<T> zonemap<T>::query(T low, T high){
-    
+    std::vector<T> result;
+    for(const auto&z : zones){
+        if(z.max >= low && z.min <= high){
+            for(const auto&e : z.elements){
+                if(e >= low && e <= high){
+                    result.push_back(e);
+                }
+            }
+        }
+    }
+    return result;
 }
 
