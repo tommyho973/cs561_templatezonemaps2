@@ -28,6 +28,14 @@ void loadPointQueries(std::string & input_queries_path, std::vector<int> & queri
   std::random_shuffle(queries.begin(), queries.end());
 
 }
+void loadRangeQueries(std::string &input_queries_path, std::vector<std::pair<int, int>> &queries) {
+    queries.clear();
+    std::ifstream infile(input_queries_path, std::ios::in);
+    int start, end;
+    while (infile >> start >> end) {
+        queries.emplace_back(start, end);
+    }
+}
 
 int main(int argc, char **argv)
 { 
@@ -70,6 +78,23 @@ int main(int argc, char **argv)
   //3. ----------------------------- range queries -----------------------------
   unsigned long long range_query_time = 0;
   // Your code starts here ...
+  std::vector<std::pair<int, int>> range_queries;
+  loadRangeQueries(kRangeQueriesPath, range_queries);
+
+  auto start_rq = std::chrono::high_resolution_clock::now();
+    for (size_t r = 0; r < kRuns; r++) {
+        for (const auto &rq : range_queries) {
+            // Perform range query on the zonemap
+            zones.query(rq.first, rq.second);
+        }
+
+        // Shuffle range queries for each run
+        std::random_shuffle(range_queries.begin(), range_queries.end());
+    }
+
+  auto stop_rq = std::chrono::high_resolution_clock::now();
+  auto duration_rq = std::chrono::duration_cast<std::chrono::microseconds>(stop_rq - start_rq);
+  range_query_time = duration_rq.count(); 
 
   std::cout << "Time taken to perform range query from zonemap = " << range_query_time*1.0/kRuns << " microseconds" << endl;
   return 0;
