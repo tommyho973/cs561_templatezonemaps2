@@ -1,5 +1,6 @@
 #include "zonemaps.h"
 #include <algorithm>
+#include <cmath>
 
 template<typename T>
 zonemap<T>::zonemap(std::vector<T> _elements, uint _num_elements_per_zone)
@@ -8,7 +9,7 @@ zonemap<T>::zonemap(std::vector<T> _elements, uint _num_elements_per_zone)
     // constructor 
     // Your code starts here ...
     if(num_elements_per_zone<1){
-        throw std::invalid_argument("Please enter a number greater than 0")
+        throw std::invalid_argument("Please enter a number greater than 0");
     }
     if(elements.empty()){
         num_zones = 0;
