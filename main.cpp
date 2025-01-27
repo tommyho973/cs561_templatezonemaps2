@@ -35,6 +35,7 @@ void loadRangeQueries(std::string &input_queries_path, std::vector<std::pair<int
     while (infile >> start >> end) {
         queries.emplace_back(start, end);
     }
+    std::random_shuffle(queries.begin(),queries.end());
 }
 
 int main(int argc, char **argv)
@@ -87,9 +88,6 @@ int main(int argc, char **argv)
             // Perform range query on the zonemap
             zones.query(rq.first, rq.second);
         }
-
-        // Shuffle range queries for each run
-        std::random_shuffle(range_queries.begin(), range_queries.end());
     }
 
   auto stop_rq = std::chrono::high_resolution_clock::now();

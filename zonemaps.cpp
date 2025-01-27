@@ -78,13 +78,17 @@ std::vector<T> zonemap<T>::query(T low, T high){
     //Iterate over the zones
     for(const auto&z : zones){
         //If range exists in the zone range then we add complying elements to our result vector
-        if(z.max >= low && z.min <= high){
-            for(const auto&e : z.elements){
-                if(e >= low && e <= high){
-                    result.push_back(e);
-                }
-            }
+        if(z.max < low || z.min > high){
+            continue;
         }
+        // Binary search for the first element greater than or equal to low
+        auto start_it = std::lower_bound(z.elements.begin(), z.elements.end(), low);
+        
+        // Binary search for the last element less than or equal to high
+        auto end_it = std::upper_bound(z.elements.begin(), z.elements.end(), high);
+
+        // Add the range of elements in this zone to the result
+        result.insert(result.end(), start_it, end_it);
     }
     return result;
 }

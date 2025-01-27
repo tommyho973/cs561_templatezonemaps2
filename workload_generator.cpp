@@ -149,14 +149,20 @@ void generate_range_queries(std::string & output_path, Parameters & params,
 	std::default_random_engine gen(seed);
 	std::ofstream output_file(output_path);
 	srand(time(NULL));
+
 	size_t range_size = static_cast<int>(std::floor(params.s * params.N));
 
-	for(size_t i = 0; i < params.R; i++){
-		std::uniform_int_distribution<int> start_dist(0, params.UB - range_size);
-		size_t start = start_dist(gen);
-		size_t end = start + range_size - 1;
-		output_file << start << " " << end << std::endl;
-	}
+	// Generate R range queries
+    for (size_t i = 0; i < params.R; i++) {
+        // Ensure start point allows for a valid range
+        std::uniform_int_distribution<int> start_dist(0, std::max(0, static_cast<int>(params.UB - range_size + 1)));
+        int start = start_dist(gen);
+        int end = start + range_size - 1;
+
+        // Output the range query to the file
+        output_file << start << " " << end << std::endl;
+    }
+	output_file.close();
 
 }
 
