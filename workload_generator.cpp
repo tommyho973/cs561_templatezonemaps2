@@ -145,16 +145,18 @@ void generate_point_queries(std::string & output_path, Parameters & params,
 void generate_range_queries(std::string & output_path, Parameters & params,
 		std::vector<int> & input_data) {
 	// Your code starts here ...
+	// Using above code as the base format
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	std::default_random_engine gen(seed);
 	std::ofstream output_file(output_path);
 	srand(time(NULL));
 
+	// Calculating number of selected elements as the floor of s * N as provided in the document
 	size_t range_size = static_cast<int>(std::floor(params.s * params.N));
 
 	// Generate R range queries
     for (size_t i = 0; i < params.R; i++) {
-        // Ensure start point allows for a valid range
+        // Makes sure we do not exceed the bound parameters
         std::uniform_int_distribution<int> start_dist(0, std::max(0, static_cast<int>(params.UB - range_size + 1)));
         int start = start_dist(gen);
         int end = start + range_size - 1;
